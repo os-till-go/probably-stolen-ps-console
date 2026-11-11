@@ -1,156 +1,128 @@
 # PS Console
 
-An in-game console for **Probably Stolen**. Press `~`, type a command, done.
+[English](README.en.md) · **简体中文**
+
+《Probably Stolen》的游戏内控制台。按 `~` 打开，敲命令刷物品、改数值。
+
+基于游戏**原生 mod 框架**（`Mods/<id>/manifest.xml` + DLL），不需要 BepInEx / MelonLoader / dev.txt。
+
+![控制台](docs/console.jpg)
 
 ```
-> stat
-cash         : 1240
-wild favor   : 12
-day          : 9
-...
-> item bandage_item 5
-spawned 5 x bandage_item (Bandage) -> backpack
+> item 水
+'水' is ambiguous (45), try an id:
+  aquascan                    水质扫描仪
+  bottled_water               瓶装水（标准）
+  bottled_water_premium       瓶装泉水
+  bottle_printer              水瓶打印机
+  drain                       排水口
+  farm_module_dream_cap       梦帽菇中和水培模组
+> item 水质扫描仪
+spawned 1 x aquascan (水质扫描仪) -> backpack
 ```
 
-Built against the game's **native mod loader** (`Mods/<id>/manifest.xml` + a DLL). No BepInEx, no MelonLoader, no `dev.txt`.
+![按名字搜物品](docs/item-search.png)
 
-## Features
+## 安装
 
-- **Items** — spawn any item the game knows about, into the backpack, front counter, back counter, display case or trash.
-- **Names, not just ids** — `items bandage` searches ids *and* the in-game display name, and prints both side by side. `item Bandage 5` works too.
-- **Numbers** — cash, Wild's favor, all six factions' reputation, rent, loan, day counter, store attractiveness, luck, wounds.
-- **Readable state** — `stat` dumps the whole run on one screen.
-- **Doesn't fight the game** — while the console is open the keyboard hotkeys are suppressed, but the mouse keeps working. A transparent blocker only over the panel stops clicks from falling through to the shelf behind it.
+直接下 [Releases](../../releases/latest) 里的 `ps-console-1.1.0.zip`，里面就是可用的 `ps_console` 文件夹。
 
-## Install
+1. 把 `ps_console` 文件夹放进 `Probably Stolen/Mods/`。
+2. 启动游戏 → 主菜单 **Mods** → 选中 **PS Console** → **Activate**。
+3. **重启游戏**（新激活的 mod 下次启动才加载）。
+4. 进入存档后按 `~`（键盘上没有反引号就按 `F10`）。
 
-Grab `ps-console-1.1.0.zip` from [Releases](../../releases/latest) — it contains a ready-to-drop `ps_console` folder.
+> 第一次激活时游戏会扫 DLL、比对 manifest 声明的能力。本 mod 不读文件、不联网、不反射外部程序集，`<Capabilities />` 留空即可通过。
 
-1. Drop the `ps_console` folder into `Probably Stolen/Mods/`.
-2. Launch the game → **Mods** in the main menu → select **PS Console** → **Activate**.
-3. Restart the game (newly activated mods load on the next start).
-4. Press `~` (or `F10` if your keyboard layout has no backquote) once you are in a save.
+## 命令
 
-## Commands
-
-| Command | What it does |
+| 命令 | 说明 |
 | --- | --- |
-| `help [command]` | List everything, or explain one command |
-| `stat` | Cash, favor, day, rent, loan, attractiveness, health, reputation |
-| `cash +500` / `cash -200` / `cash =1000` | Add, subtract or set cash |
-| `favor +10` | Wild's favor |
-| `rep` / `rep list` | List faction reputation |
-| `rep security +50` | One faction |
-| `rep all =100` | Every faction (the game clamps to -200..200) |
-| `item <id or name> [count] [-f\|-b\|-d\|-t]` | Spawn items: `-f` front counter, `-b` back counter, `-d` display case, `-t` trash, default backpack |
-| `give …` | Alias of `item` |
-| `items [filter]` | Search ids and display names |
-| `heal` | Clear wounds |
-| `luck 80` | Set luck (0–100) |
-| `day +1` | Move the day counter (can desync scheduled events) |
-| `rent -200` / `loan -200` | Rent / loan due |
-| `attract +100` | Base store attractiveness |
-| `clear` / `close` | Clear the log / close the window |
+| `help [命令]` | 列出全部命令 / 看某条用法 |
+| `stat` | 现金、Wild 好感、天数、租金、贷款、吸引力、伤势/幸运、各派系声望 |
+| `cash +500` / `cash -200` / `cash =1000` | 加 / 减 / 设为指定金额 |
+| `favor +10` | Wild 的好感 |
+| `rep` / `rep list` | 列当前派系声望 |
+| `rep security +50` | 单个派系加减 |
+| `rep all =100` | 所有派系（游戏自己 clamp 到 -200..200） |
+| `item <id 或名字> [数量] [-f\|-b\|-d\|-t]` | 刷物品；`-f` 前台柜台、`-b` 后仓、`-d` 展示柜、`-t` 垃圾桶，默认背包 |
+| `give …` | `item` 的别名 |
+| `items [关键词]` | 搜物品，id 和显示名一起匹配，结果两列对照 |
+| `heal` | 清伤势 |
+| `luck 80` | 设幸运值 0–100 |
+| `day +1` | 改天数计数器（可能打乱排期事件） |
+| `rent -200` / `loan -200` | 改租金 / 贷款 |
+| `attract +100` | 改店铺基础吸引力 |
+| `clear` / `close` | 清屏 / 关窗 |
 
-**Number syntax:** `+N` adds, `-N` subtracts, `=N` sets, a bare `N` also sets.
+**数值写法**：`+N` 加、`-N` 减、`=N` 设为 N、裸写 `N` 也是设为 N。
 
-**Faction shorthands:** `lower`, `upper`, `security` (`sec`), `blackmarket` (`bm`), `revolution` (`rev`), `tourist`, `church`, `cartel`.
+**派系简写**：`lower` `upper` `security`(`sec`) `blackmarket`(`bm`) `revolution`(`rev`) `tourist` `church` `cartel`。
 
-**Keys:** `Tab` completes command names and item ids, `↑`/`↓` walk the history, `Esc` closes, `Enter` runs.
+**快捷键**：`Tab` 补全（命令名 / 物品 id）、`↑↓` 翻历史、`Esc` 关闭、`Enter` 执行。
 
-## How it works
+### 按名字搜物品
 
-### Keyboard yes, mouse no
+不记得 id 没关系，`items` 和 `item` 都同时匹配 **id、英文名、游戏内中文名**：
 
-Two Harmony postfixes make the game think a text field has focus while the console is open:
+```
+items 水        → 把带"水"的物品全列出来（id + 显示名两列）
+item 水          → 命中多个时不会瞎猜，直接把候选列出来让你挑
+item 水质扫描仪  → 唯一命中，直接刷 1 个进背包
+```
 
-- `StoreUIManager.IsAnyTyping` — gates every keyboard action handler.
-- `KeyBindHelper.get_SuppressHotkeys` — catches the shortcuts that read keys directly.
+## 几个实现要点
 
-The mouse is deliberately left alone. The panel sits on a separate `Canvas` (`sortingOrder` 30000) with a transparent `Image` and a `GraphicRaycaster`, so clicks that land on the panel are absorbed before they reach the game's uGUI, while the rest of the screen stays fully playable.
+- **只压键盘，不动鼠标**：两个 Harmony postfix 让游戏以为在打字（`StoreUIManager.IsAnyTyping`、`KeyBindHelper.get_SuppressHotkeys`）；
+  面板区域挂一个独立 Canvas + 透明 Image 吃掉点击，防止点输入框时顺带抓到柜台上的货，面板以外的点击照常传给游戏。
+- **物品 id ↔ 显示名**：名字不是从 id 拼的（`bandage_item` → `item_bandage_name`），先查本地化表，
+  查不到就临时造一个物品读 `GetDisplayName()` 再 `Destroy()`，按 id 缓存；搜索只走便宜路径，不会一次造上千个物品。
+- **manifest 不写 `<GameVersions>`**：这版游戏报不出可用版本串，写了任何条目都会被标红；留空显示 `-` 且不报错。
 
-> v1.0.0 instead skipped `InputActionManager.Update` and disabled the `EventSystem`; that killed the mouse. Don't do that.
+## 从源码编译
 
-### Item id ↔ display name
-
-Item display names are **not** derived from ids. Most live in the `Item` localisation table under hand-written keys (`bandage_item` → `item_bandage_name`, `battery100` → `item_energy_credit_name`). `ItemDb.Name(id)` resolves in three steps:
-
-1. Try `item_<id>_name`, `<id>_name`, and the `_item`-stripped variants in the table (cheap, prefilled in bulk).
-2. Otherwise build one throwaway item via `DirectoryMaster.Item(id)`, read `GetDisplayName()`, and `Destroy()` it immediately. It never reaches an inventory. (`PermitHelper.OnNewItemCreated` only touches that temporary item's own contraband flag.)
-3. Otherwise prettify the id (`Bandage Item`).
-
-Results are cached per id; searching uses the cheap path so a single query never instantiates a thousand items.
-
-### Game APIs used
-
-Reverse-engineered from `Assembly-CSharp.dll` — the public modding guide doesn't document most of these.
-
-| What | API |
-| --- | --- |
-| Cash | `PlayerStore.Instance.playerCash`, `ModCash(int, bool)` |
-| Wild's favor | `PlayerStore.Instance.wildFavor` |
-| Faction reputation | `PlayerStore.Instance.storeReputations`, `StoreReputation.GetReputation()/SetReputation(double)` |
-| Day | `StoreStation.Instance.dayCounter` |
-| All item ids | `DirectoryMaster.GetIdentifierList<GameItem>()` |
-| Spawning | `ModHelper.SpawnItem(id)` + `ModHelper.MoveItemTo*` |
-| Item containers | `EmporiumEntry.Instance` (null in the main menu, so spawns need a loaded save) |
-| Health / luck | `PlayerStore.Instance.healthData` |
-
-## Build from source
-
-Requires the .NET SDK (6.0+) and a copy of the game.
+需要 .NET SDK（6.0+）和一份游戏本体。
 
 ```bash
 cd src/PSConsole
 dotnet build -c Release -p:GameDir="C:\Program Files (x86)\Steam\steamapps\common\Probably Stolen"
 ```
 
-`GameDir` may also come from the `PS_GAME_DIR` environment variable, and defaults to the standard Steam path. A successful build copies `PSConsole.dll` and `manifest.xml` into `<GameDir>/Mods/ps_console/`.
+`GameDir` 也可以用环境变量 `PS_GAME_DIR`，默认走标准 Steam 路径。编译成功会自动把
+`PSConsole.dll` + `manifest.xml` 拷进 `<GameDir>/Mods/ps_console/`。
 
-Because the DLL changes on every build, the game asks you to **Review and enable** again — turn on **Developer mode** in the mod's detail pane once and it trusts every later rebuild.
+DLL 每次重新编译都会变，游戏会要求 **Review and enable** —— 在 mod 详情页打开一次 **Developer mode**，之后自动信任。
 
-### Layout
+### 目录结构
 
 ```
 src/PSConsole/
-├── ModEntry.cs          IMod entry point; creates the DontDestroyOnLoad console object
-├── ConsoleBehaviour.cs  The IMGUI window: input, history, completion, scrolling, toggle
-├── CommandProcessor.cs  Command registry, argument parsing, tab completion
-├── Commands.cs          Command implementations + the item database
-└── Patches.cs           The two Harmony postfixes
+├── ModEntry.cs          IMod 入口；创建 DontDestroyOnLoad 的控制台对象
+├── ConsoleBehaviour.cs  IMGUI 窗口：输入、历史、补全、滚动、开关
+├── CommandProcessor.cs  命令注册、参数解析、Tab 补全
+├── Commands.cs          各命令实现 + 物品数据库
+└── Patches.cs           两个 Harmony postfix
 ```
 
-The loader applies `[HarmonyPatch]` classes itself, so the mod must **not** call `PatchAll` anywhere.
+loader 会自己 `PatchAll`，所以 mod 里**不要**再调一次。
 
-## Notes and limitations
+## 注意
 
-- `rep`, `cash` and friends edit the **in-memory** run. Save the game to persist.
-- `day` moves the counter directly and can desync scheduled events and rent timers. Save first.
-- The console does not pause the game; time keeps running while it is open.
-- Item name lookups match the current game language where the table has an entry; the rest fall back to the English id.
+- `cash` / `rep` 改的是**当前存档内存里的值**，要保存才落盘。
+- `day` 直接改计数器，可能与事件/租金排期错位，先存档。
+- 控制台不暂停游戏，打开时时间照常走。
+- 物品名会跟随游戏语言（表里有条目的部分），没条目的回落到英文 id。
+- 仅针对 **100-Rev6** 测过；游戏更新若改掉被 patch 的方法名，mod 会加载失败（看日志、提 issue）。
+- 和 Questing Goose Studio 无关，仓库不含任何游戏文件。
 
-### Why there is no `<GameVersions>` in the manifest
+## 同类 mod
 
-The mod menu compares that list against `Application.version` after stripping everything but digits and dots. This build reports no usable version string, so *any* entry is flagged red even though the mod loads fine. An empty list shows `-` and raises no warning. If the game starts reporting a proper version, add `<GameVersions><Version>1.0.0</Version></GameVersions>` back.
+只是想要功能、不想自己编译的话：
 
-## Compatibility
+- [Debug Console Plus](https://www.nexusmods.com/probablystolen/mods/257) — ButterLab，`Ctrl+Shift+I`，功能最全（UI 面板、物品属性、NPC、事件）
+- [PSConsole](https://www.nexusmods.com/probablystolen/mods/554) — muchengbai，`/`
+- [Console Mod](https://www.nexusmods.com/probablystolen/mods/618) — BBQ886，`~`
 
-Tested against **Probably Stolen 100-Rev6**. Should keep working across revisions of 1.0.0, but a game update that renames the patched methods will make the mod fail to load — check the log and open an issue.
+## 许可
 
-Not affiliated with Questing Goose Studio. No game files are included or redistributed; you need your own copy of the game to build.
-
-## See also
-
-Other console-style mods for the same game, if you just want the features rather than the source:
-
-- [Debug Console Plus](https://www.nexusmods.com/probablystolen/mods/257) — ButterLab, `Ctrl+Shift+I`, the most complete one (UI panels, item attributes, NPCs, events)
-- [PSConsole](https://www.nexusmods.com/probablystolen/mods/554) — muchengbai, `/`
-- [Console Mod](https://www.nexusmods.com/probablystolen/mods/618) — BBQ886, `~`
-
-## License
-
-MIT — see [LICENSE](LICENSE).
-
----
-
-中文说明见 [README.zh-CN.md](README.zh-CN.md)。
+MIT，见 [LICENSE](LICENSE)。
