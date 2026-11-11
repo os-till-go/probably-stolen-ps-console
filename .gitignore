@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Local machine paths (holds the absolute game folder) and decompiled game code —
+# never commit these.
+Directory.Build.props
+_decompiled/
+reference/

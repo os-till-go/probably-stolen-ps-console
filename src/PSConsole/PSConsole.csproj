@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <AssemblyName>PSConsole</AssemblyName>
+    <RootNamespace>PSConsole</RootNamespace>
+    <Nullable>disable</Nullable>
+    <DebugType>none</DebugType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!--
+      Game install folder. Resolution order:
+        1. -p:GameDir="..." on the command line
+        2. PS_GAME_DIR environment variable
+        3. Directory.Build.props next to this project (gitignored, for local setups)
+        4. the default Steam location
+    -->
+    <GameDir Condition="'$(GameDir)' == '' and '$(PS_GAME_DIR)' != ''">$(PS_GAME_DIR)</GameDir>
+    <GameDir Condition="'$(GameDir)' == ''">$(MSBuildProgramFiles32)\Steam\steamapps\common\Probably Stolen</GameDir>
+    <ManagedDir>$(GameDir)\Probably Stolen_Data\Managed</ManagedDir>
+    <ModDir>$(GameDir)\Mods\ps_console</ModDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(ManagedDir)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(ManagedDir)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(ManagedDir)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(ManagedDir)\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(ManagedDir)\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(ManagedDir)\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(ManagedDir)\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>$(ManagedDir)\UnityEngine.UIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Localization">
+      <HintPath>$(ManagedDir)\Unity.Localization.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- 编译完自动铺到 Mods\ps_console（找不到游戏目录就跳过，不打断编译） -->
+  <Target Name="DeployToGame" AfterTargets="Build" Condition="Exists('$(GameDir)')">
+    <ItemGroup>
+      <ModOutput Include="$(TargetDir)$(AssemblyName).dll" />
+      <ModOutput Include="$(MSBuildProjectDirectory)\manifest.xml" />
+    </ItemGroup>
+    <MakeDir Directories="$(ModDir)" />
+    <Copy SourceFiles="@(ModOutput)" DestinationFolder="$(ModDir)" />
+    <Message Importance="high" Text="[PSConsole] deployed to $(ModDir)" />
+  </Target>
+
+  <Target Name="DeploySkipped" AfterTargets="Build" Condition="!Exists('$(GameDir)')">
+    <Message Importance="high"
+             Text="[PSConsole] game folder not found: $(GameDir). Build is fine; deploy skipped. Pass -p:GameDir=... or set PS_GAME_DIR to install automatically." />
+  </Target>
+
+</Project>

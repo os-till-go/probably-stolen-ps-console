@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+  <ID>ps_console</ID>
+  <Name>PS Console</Name>
+  <Author>Tyler</Author>
+  <ModVersion>1.1.0</ModVersion>
+  <Description>In-game console on the ~ key: spawn items and add or subtract cash, Wild's favor, faction reputation and other run values.</Description>
+  <!--
+    GameVersions is intentionally left out.
+    The menu compares that list against Application.version through
+    VersionMatchesGame(); this build reports no usable version string, so any
+    entry is flagged red even though the mod loads and runs fine. An empty list
+    shows "-" and no warning. Details in README.
+  -->
+  <Prerequisites />
+  <Assemblies>
+    <Assembly>PSConsole.dll</Assembly>
+  </Assemblies>
+  <Capabilities />
+</Manifest>
