@@ -24,6 +24,8 @@ Built against the game's **native mod loader** (`Mods/<id>/manifest.xml` + a DLL
 
 ## Install
 
+Grab `ps-console-1.1.0.zip` from [Releases](../../releases/latest) — it contains a ready-to-drop `ps_console` folder.
+
 1. Drop the `ps_console` folder into `Probably Stolen/Mods/`.
 2. Launch the game → **Mods** in the main menu → select **PS Console** → **Activate**.
 3. Restart the game (newly activated mods load on the next start).

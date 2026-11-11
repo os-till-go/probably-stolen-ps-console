@@ -5,6 +5,8 @@
 
 ## 安装
 
+直接下 [Releases](../../releases/latest) 里的 `ps-console-1.1.0.zip`，里面就是可用的 `ps_console` 文件夹。
+
 1. 把 `ps_console` 文件夹放进 `Probably Stolen/Mods/`。
 2. 启动游戏 → 主菜单 **Mods** → 选中 **PS Console** → **Activate**。
 3. **重启游戏**（新激活的 mod 下次启动才加载）。

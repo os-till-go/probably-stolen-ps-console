@@ -3,6 +3,7 @@ obj/
 .vs/
 *.user
 *.suo
+.release/
 
 # Local machine paths (holds the absolute game folder) and decompiled game code —
 # never commit these.
